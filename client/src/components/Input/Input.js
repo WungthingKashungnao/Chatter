@@ -8,13 +8,13 @@ const Input = ({
   inputClassName = "", //class for the input
   isRequired = true,
   placeholder = "",
-  value = "",
-  onChange = () => {},
+  value = "", //data passed from component
+  onChange = () => {}, //onChange event passed from component
 }) => {
   return (
     // input container start
     <div className={`${className}`}>
-      <label for={name} className="block text-sm font-medium text-gray-800">
+      <label htmlFor={name} className="block text-sm font-medium text-gray-800">
         {label}
       </label>
       <input
