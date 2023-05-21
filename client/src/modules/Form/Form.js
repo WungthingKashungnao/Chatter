@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import Input from "../../components/Input/Input"; //input component
 import Button from "../../components/Button/Button"; //button component
+import { useNavigate } from "react-router-dom";
 
+// this Form component is being used for both sign in and sign up
 const Form = ({ isSignInPage = true }) => {
   // state for form handling
   const [data, setData] = useState({
@@ -12,6 +14,7 @@ const Form = ({ isSignInPage = true }) => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   // console.log("Data", data);
   return (
@@ -83,7 +86,13 @@ const Form = ({ isSignInPage = true }) => {
       <div>
         {/* show texts based on isSignInPage state */}
         {isSignInPage ? "Don't have an account?" : "Already have an account?"}
-        <span className="text-primary cursor-pointer underline">
+        <span
+          className="text-primary cursor-pointer underline"
+          //navigate sing in on sing up based on the isSignInPage prop
+          onClick={() => {
+            navigate(`/users/${isSignInPage ? "sign_up" : "sign_in"}`);
+          }}
+        >
           {isSignInPage ? "Sign Up" : "Sign In"}
         </span>
       </div>

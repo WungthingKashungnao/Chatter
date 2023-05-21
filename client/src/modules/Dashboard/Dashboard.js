@@ -119,7 +119,7 @@ const Dashboard = () => {
         {/* chat info bar end */}
 
         {/* chats start */}
-        <div className="h-[75%] w-full overflow-scroll shadow-md">
+        <div className="h-[75%] w-full overflow-y-scroll  shadow-md">
           <div className=" px-10 py-14">
             <div className="p-4 max-w-[50%] bg-secondary rounded-b-xl rounded-tr-xl mb-6">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
