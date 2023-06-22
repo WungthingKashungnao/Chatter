@@ -22,6 +22,6 @@ const userSchema = mongoose.Schema({
   },
 });
 
-// here User is the name of the collection, but s will automatically added and will be renamed to Users
+// here User is the name of the collection, but s will automatically added and u wil become small letter, and will be renamed to users
 const Users = mongoose.model("User", userSchema);
 module.exports = Users; //exporting the users model
