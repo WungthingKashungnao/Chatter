@@ -5,8 +5,9 @@ const jwt = require("jsonwebtoken");
 const app = express();
 // imported files created by me start
 const serverConnect = require("./db/connection.js"); //file to connect to the databse ,the return value here is a function the connect function
-const UserModel = require("./models/Users.js"); //this file contains User model
-const Users = require("./models/Users.js");
+// const UserModel = require("./models/Users.js"); //this file contains User model
+const Users = require("./models/Users.js"); //this file contains User model
+const Conversation = require("./models/Conversation.js"); //Conversation model file
 // imported files created by me end
 
 app.use(express.json()); //very important we need this to send json data, for the routes
@@ -76,12 +77,10 @@ app.post("/api/login", async (req, res, next) => {
               next();
             }
           );
-          res
-            .status(200)
-            .json({
-              user: { email: user.email, fullName: user.fullName },
-              token: user.token,
-            });
+          res.status(200).json({
+            user: { email: user.email, fullName: user.fullName },
+            token: user.token,
+          });
         }
       }
     }
@@ -90,6 +89,47 @@ app.post("/api/login", async (req, res, next) => {
   }
 });
 // Route to login end
+
+// Route to conversation start
+app.post("/api/conversation", async (req, res) => {
+  try {
+    const { senderId, receiverId } = req.body;
+    const newConversation = new Conversation({
+      members: [senderId, receiverId], //the members of the converstaion will both the sender and the reciever
+    });
+    await newConversation.save(); //saving the conversatiion to the database
+    res.status(200).send("Conversatin created successfully"); //sending response to the user
+  } catch (err) {
+    console.log(err, ":Error");
+  }
+});
+// Route to conversation end
+
+// Route to get conversation list start
+app.get("/api/conversation/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId; //taking in userId from the url passed in
+    const conversations = await Conversation.find({
+      members: { $in: [userId] },
+    }); //finding whether conversation exist with the sent in userId
+    const conversationUserData = Promise.all(
+      conversations.map(async (conversation) => {
+        const receiverId = conversation.members.find(
+          (member) => member !== userId
+        );
+        const user = await Users.findById(receiverId);
+        return {
+          user: { email: user.email, fullName: user.fullName },
+          conversationId: conversation._id,
+        };
+      })
+    );
+    res.status(200).json(await conversationUserData);
+  } catch (err) {
+    console.log(err, ":Error");
+  }
+});
+// Route to get conversation list end
 
 // starting the server
 app.listen(port, () => {
